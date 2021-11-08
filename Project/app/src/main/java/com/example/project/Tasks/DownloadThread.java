@@ -1,29 +1,40 @@
 package com.example.project.Tasks;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.project.MainActivity;
+import com.example.project.Tasks.NetUtil;
+import com.example.project.model.Dogs;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.List;
 
 public class DownloadThread implements Runnable {
     private Context ctx;
     private URL[] urls;
 
-    public DownloadThread(Context ctx, URL... urls){
-        this.ctx =ctx;
+    public DownloadThread(Context ctx, URL[] urls) {
+        this.ctx = ctx;
         this.urls = urls;
+    }
+
+    public static String removeLastChar(String str) {
+        return removeLastChars(str, 1);
+    }
+
+    public static String removeLastChars(String str, int chars) {
+        return str.substring(0, str.length() - chars);
     }
 
     @Override
     public void run() {
-
         ((MainActivity)ctx).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -31,42 +42,45 @@ public class DownloadThread implements Runnable {
             }
         });
 
-        //NetUtil Part
+        String result = "[";
+        for(URL u : urls){
+            result = result.toString() + NetUtil.getTextFromURL(u) + ",";
+        }
+        result = removeLastChar(result);
+        result = result + "]";
+        Log.d("Apple", result);
 
-        StringBuilder response = new StringBuilder();
-        try {
-            URLConnection conn = urls[0].openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                response.append(inputLine);
-            Log.d("Apple", response.toString());
-            in.close();
-            //return response.toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        //String imageBaseURL = "https://dog.ceo/api/breeds/";
+
+        GsonBuilder gsb = new GsonBuilder();
+        Gson gson = gsb.create();
+
+        List<Dogs> resultPlanets = Arrays.asList(gson.fromJson(result, Dogs[].class));
+
+        //int lastIndex = resultPlanets.size()-1;
+        //resultPlanets.remove(lastIndex);
+
+        for (Dogs p : resultPlanets) {
+            Bitmap bmpPlanet = null;
+            try {
+                bmpPlanet = NetUtil.readBitmapUrl(new URL(p.getImageUrl()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            p.setBmpImage(bmpPlanet);
         }
 
-        //NetUtil part end
-
-
-        String result = response.toString();
         try{
             Thread.sleep(2000);
-        }catch (InterruptedException e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         ((MainActivity)ctx).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((MainActivity)ctx).prepareUIFinishDownload(result);
+                ((MainActivity)ctx).prepareUIFinishDownload(resultPlanets);
             }
         });
-    }
 
+    }
 }

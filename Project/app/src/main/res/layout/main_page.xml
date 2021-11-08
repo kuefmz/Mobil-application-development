@@ -30,4 +30,23 @@
         app:layout_constraintVertical_bias="0.137"
         tools:visibility="invisible" />
 
+    <ListView
+        android:id="@+id/lst_planets"
+        android:layout_width="406dp"
+        android:layout_height="615dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_username"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="2dp" />
+
+    <Button
+        android:id="@+id/btn_load_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load more images"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lst_planets" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
