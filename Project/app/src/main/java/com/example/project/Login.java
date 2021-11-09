@@ -55,5 +55,7 @@ public class Login extends AppCompatActivity {
                 startActivity(iNext);
             }
         });
+
+        Intent i = this.getIntent();
     }
 }

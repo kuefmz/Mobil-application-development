@@ -48,17 +48,11 @@ public class DownloadThread implements Runnable {
         }
         result = removeLastChar(result);
         result = result + "]";
-        Log.d("Apple", result);
-
-        //String imageBaseURL = "https://dog.ceo/api/breeds/";
 
         GsonBuilder gsb = new GsonBuilder();
         Gson gson = gsb.create();
 
         List<Dogs> resultPlanets = Arrays.asList(gson.fromJson(result, Dogs[].class));
-
-        //int lastIndex = resultPlanets.size()-1;
-        //resultPlanets.remove(lastIndex);
 
         for (Dogs p : resultPlanets) {
             Bitmap bmpPlanet = null;
@@ -67,14 +61,12 @@ public class DownloadThread implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            String imageUrl = p.getImageUrl();
+            String [] type = imageUrl.split("/");
+            p.setType(type[4]);
             p.setBmpImage(bmpPlanet);
         }
 
-        try{
-            Thread.sleep(2000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         ((MainActivity)ctx).runOnUiThread(new Runnable() {
             @Override
             public void run() {

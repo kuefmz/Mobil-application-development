@@ -26,32 +26,24 @@ public class Dogs {
     public void setBmpImage(Bitmap bmpImage) {
             this.bmpImage = bmpImage;
     }
-
     public Bitmap getBmpImage() {
         return bmpImage;
     }
 
-    public String setType() {
-        String [] type = imageUrl.split("/");
-        return type[4];
-    }
-
-    public void getType(String name) {
-        this.typeOfDog = name;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+    public String getImageUrl() { return imageUrl; }
+
+
+    public void setType(String type) { this.typeOfDog = type; }
+    public String getType() { return this.typeOfDog; }
+
 
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }

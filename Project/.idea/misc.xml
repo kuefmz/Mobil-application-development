@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dogs_row_layout.xml" value="0.2296195652173913" />
+        <entry key="app/src/main/res/layout/dogsdata_page.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/main_page.xml" value="0.24320652173913043" />
       </map>
     </option>

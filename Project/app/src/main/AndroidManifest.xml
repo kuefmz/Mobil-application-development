@@ -23,9 +23,18 @@
         <!--Main activity -->
         <activity
             android:name=".MainActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+        </activity>
+        <activity
+            android:name=".DogsDataActivity"
             android:exported="true" >
         </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>
