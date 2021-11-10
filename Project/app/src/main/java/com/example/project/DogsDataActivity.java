@@ -6,12 +6,14 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,6 +28,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.project.Tasks.NetUtil;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DogsDataActivity extends AppCompatActivity {
 
@@ -50,24 +56,12 @@ public class DogsDataActivity extends AppCompatActivity {
         mNotificationManager.notify(0, mBuilder.build());
     }
 
-    void shareImage(Context ctx, Bitmap bitmap, String text, String pathofBmp){
-        pathofBmp = MediaStore.Images.Media.insertImage(ctx.getContentResolver(),bitmap,"Title",null);
-                //MediaStore.Images.Media.insertImage(getContentResolver(),
-                //        bitmap,"title", null);
-        Uri uri = Uri.parse(pathofBmp);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Star App");
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(shareIntent, "hello hello"));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dogsdata_page);
+
+        final int REQUEST_CODE_SOME_FEATURES_PERMISSIONS = 1;
 
         Intent i = this.getIntent();
         String dogType = i.getStringExtra(MainActivity.PARAMETER_DOG_TYPE);
@@ -115,12 +109,49 @@ public class DogsDataActivity extends AppCompatActivity {
             }
         });
 
+
+
         //set share image button
         Button btnSharePic = findViewById(R.id.btn_share_pic);
         btnSharePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //shareImage(DogsDataActivity.this, bmpDog, "", dogImageUrl);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    int hasWritePermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    int hasReadPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    List<String> permissions = new ArrayList<String>();
+                    if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
+                        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    }
+                    if (hasReadPermission != PackageManager.PERMISSION_GRANTED) {
+                        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+                    if (!permissions.isEmpty()) {
+                        requestPermissions(permissions.toArray(new String[permissions.size()]), REQUEST_CODE_SOME_FEATURES_PERMISSIONS);
+                    }
+                }
+
+                ContentResolver cr = getContentResolver();
+                //Uri uri = Uri.parse("content://media/external/images/media");
+                //String provider = "com.android.providers.media.MediaProvider";
+
+                //grantUriPermission(provider, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                //grantUriPermission(provider, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                //grantUriPermission(provider, uri, Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                String path = MediaStore.Images.Media.insertImage(cr, bmpDog,"title", "description");
+                Uri imageUri = Uri.parse(path);
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                //shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                //shareIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                //shareIntent.setFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                shareIntent.setType("image/jpeg");
+                startActivity(Intent.createChooser(shareIntent,"Dog image"));
+
 
             }
         });
