@@ -6,12 +6,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,7 +23,6 @@ import com.example.project.model.DogsListAdapter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         parameterUsername = i.getStringExtra(Login.PARAMETER_USERNAME);
         ((TextView) findViewById(R.id.txt_username)).setText("Welcome " + parameterUsername + "!");
 
-        try{
+        try {
             randomDogs[0] = (new URL("https://dog.ceo/api/breeds/image/random"));
             randomDogs[1] = (new URL("https://dog.ceo/api/breeds/image/random"));
             randomDogs[2] = (new URL("https://dog.ceo/api/breeds/image/random"));
@@ -100,13 +97,13 @@ public class MainActivity extends AppCompatActivity {
             randomDogs[7] = (new URL("https://dog.ceo/api/breeds/image/random"));
             randomDogs[8] = (new URL("https://dog.ceo/api/breeds/image/random"));
             randomDogs[9] = (new URL("https://dog.ceo/api/breeds/image/random"));
-        }catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
         DownloadThread dTask = new DownloadThread(MainActivity.this,
                 randomDogs);
-        Thread th=new Thread(dTask);
+        Thread th = new Thread(dTask);
         th.start();
 
 
@@ -122,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
                 DownloadThread dTask = new DownloadThread(MainActivity.this,
                         randomDogs);
-                Thread th=new Thread(dTask);
+                Thread th = new Thread(dTask);
                 th.start();
             }
         });
@@ -134,10 +131,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent iNext = new Intent(MainActivity.this, Login.class);
+
+                SharedPreferences sp = getSharedPreferences("Login", 0);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("Username", null);
+                editor.commit();
+
                 showNotification("Successful logout from Dog's app", "See You later!");
                 startActivity(iNext);
             }
         });
+
     }
+
 }
 

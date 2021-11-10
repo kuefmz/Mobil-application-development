@@ -1,5 +1,8 @@
 package com.example.project;
 
+
+import static android.app.PendingIntent.getActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
@@ -8,10 +11,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class Login extends AppCompatActivity {
 
@@ -31,7 +39,7 @@ public class Login extends AppCompatActivity {
                 .setContentText(message)// message for notification
                 .setAutoCancel(true); // clear notification after click
         Intent intent = new Intent(getApplicationContext(), Login.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         mNotificationManager.notify(0, mBuilder.build());
     }
@@ -41,21 +49,41 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
 
-        Button btnNext = findViewById(R.id.btn_login);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = ((EditText)findViewById(R.id.txt_name_input)).getText().toString();
+        SharedPreferences sp1 = this.getSharedPreferences("Login",0);
+        String uname = sp1.getString("Username", null);
 
-                showNotification("Successful login to Dog's app", "Welcome " + username +"!");
+        if (uname == null) {
 
-                Intent iNext = new Intent(Login.this, MainActivity.class);
-                iNext.putExtra(PARAMETER_USERNAME, username);
+            Button btnNext = findViewById(R.id.btn_login);
+            btnNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String username = ((EditText) findViewById(R.id.txt_name_input)).getText().toString();
 
-                startActivity(iNext);
-            }
-        });
+                    SharedPreferences sp = getSharedPreferences("Login", 0);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("Username", username);
+                    editor.commit();
+
+                    showNotification("Successful login to Dog's app", "Welcome " + username + "!");
+
+                    Intent iNext = new Intent(Login.this, MainActivity.class);
+                    iNext.putExtra(PARAMETER_USERNAME, username);
+
+                    startActivity(iNext);
+                }
+            });
+        }
+        else {
+            String username = uname;
+            Intent iNext = new Intent(Login.this, MainActivity.class);
+            iNext.putExtra(PARAMETER_USERNAME, username);
+
+            showNotification("Successful login to Dog's app", "Welcome " + username + "!");
+            startActivity(iNext);
+        }
 
         Intent i = this.getIntent();
+
     }
 }

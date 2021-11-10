@@ -3,4 +3,5 @@
     <string name="dogs">DOGS</string>
     <string name="username">Username</string>
     <string name="login">LogIn</string>
+    <string name="userlogged">false</string>
 </resources>

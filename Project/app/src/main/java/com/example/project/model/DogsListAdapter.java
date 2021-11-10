@@ -73,7 +73,6 @@ public class DogsListAdapter extends BaseAdapter {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 main_ctx.startActivity(iNext);
             }
         });
