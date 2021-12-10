@@ -22,6 +22,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.project.Tasks.DownloadThread;
 import com.example.project.Tasks.LoadLocalThread;
+import com.example.project.Tasks.NotificationTask;
 import com.example.project.model.Dogs;
 import com.example.project.model.DogsListAdapter;
 
@@ -72,28 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void showNotification(String title, String message) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("MY_APP",
-                "DOGS",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("NOTIFICATION FROM DOGS APP");
-        mNotificationManager.createNotificationChannel(channel);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "MY_APP")
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle(title) // title for notification
-                .setContentText(message)// message for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
-    }
-
     @Override
     public void onBackPressed()
-    {
+    {        NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
+
         Intent iNext = new Intent(MainActivity.this, Login.class);
 
         SharedPreferences sp = getSharedPreferences("Login", 0);
@@ -101,14 +84,16 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("Username", null);
         editor.commit();
 
-        showNotification("Successful logout from Dog's app", "See You later!");
+
+//        NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
         startActivity(iNext);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("apple", String.valueOf(checkIfNetworkAccess()));
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main_page);
 
         Intent i = this.getIntent();
@@ -177,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("Username", null);
                 editor.commit();
 
-                showNotification("Successful logout from Dog's app", "See You later!");
+                NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
                 startActivity(iNext);
             }
         });

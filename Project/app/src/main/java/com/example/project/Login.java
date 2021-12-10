@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.project.Tasks.NotificationTask;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,25 +26,6 @@ import java.io.IOException;
 public class Login extends AppCompatActivity {
 
     public final static String PARAMETER_USERNAME="username";
-
-    void showNotification(String title, String message) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("MY_APP",
-                "DOGS",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("NOTIFICATION FROM DOGS APP");
-        mNotificationManager.createNotificationChannel(channel);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "MY_APP")
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle(title) // title for notification
-                .setContentText(message)// message for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        PendingIntent pi = getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +48,7 @@ public class Login extends AppCompatActivity {
                     editor.putString("Username", username);
                     editor.commit();
 
-                    showNotification("Successful login to Dog's app", "Welcome " + username + "!");
+                    NotificationTask.showNotification("Successful login to Dog's app", "Welcome " + username + "!", Login.this);
 
                     Intent iNext = new Intent(Login.this, MainActivity.class);
                     iNext.putExtra(PARAMETER_USERNAME, username);
@@ -79,7 +62,7 @@ public class Login extends AppCompatActivity {
             Intent iNext = new Intent(Login.this, MainActivity.class);
             iNext.putExtra(PARAMETER_USERNAME, username);
 
-            showNotification("Successful login to Dog's app", "Welcome " + username + "!");
+            NotificationTask.showNotification("Successful login to Dog's app", "Welcome " + username + "!", Login.this);
             startActivity(iNext);
         }
 

@@ -38,29 +38,6 @@ import java.util.List;
 
 public class DogsDataActivity extends AppCompatActivity {
 
-    public static final int PERMISSION_WRITE = 0;
-
-
-    void showNotification(String title, String message) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("MY_APP",
-                "DOGS",
-                IMPORTANCE_DEFAULT);
-        channel.setDescription("NOTIFICATION FROM DOGS APP");
-        mNotificationManager.createNotificationChannel(channel);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "MY_APP")
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle(title) // title for notification
-                .setContentText(message)// message for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +50,7 @@ public class DogsDataActivity extends AppCompatActivity {
         String dogImageUrl = i.getStringExtra(MainActivity.PARAMETER_DOG_IMAGE_URL);
         String dogIndex = i.getStringExtra(MainActivity.PARAMETER_DOG_INDEX);
 
-        showNotification("Congratulations!", "Do You like " + dogType + " dogs?");
+        NotificationTask.showNotification("Congratulations!", "Do You like " + dogType + " dogs?", DogsDataActivity.this);
         //NoficationTask.showNofication("Congratulations!", "Do You like " + dogType + " dogs?", this);
 
         //setImage
