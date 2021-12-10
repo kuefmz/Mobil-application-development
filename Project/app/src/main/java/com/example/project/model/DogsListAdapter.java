@@ -3,6 +3,7 @@ package com.example.project.model;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,20 @@ import com.example.project.DogsDataActivity;
 import com.example.project.MainActivity;
 import com.example.project.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +42,6 @@ public class DogsListAdapter extends BaseAdapter {
     public void addAll(List<Dogs> dogs) {
         data.clear();
         data.addAll(dogs);
-
     }
 
     @Override
@@ -61,18 +72,15 @@ public class DogsListAdapter extends BaseAdapter {
         ImageView imageView = view.findViewById(R.id.image_dog);
         imageView.setImageBitmap(data.get(i).getBmpImage());
         imageView.setClickable(true);
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent iNext = new Intent(main_ctx, DogsDataActivity.class);
                 iNext.putExtra(MainActivity.PARAMETER_DOG_TYPE, data.get(i).getType());
                 iNext.putExtra(MainActivity.PARAMETER_DOG_IMAGE_URL, data.get(i).getImageUrl());
+                iNext.putExtra(MainActivity.PARAMETER_DOG_INDEX, Integer.toString(i));
 
-                try (FileOutputStream out = new FileOutputStream(main_ctx.getFilesDir() + "/dogDataImage.png")) {
-                    data.get(i).getBmpImage().compress(Bitmap.CompressFormat.PNG, 100, out);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 main_ctx.startActivity(iNext);
             }
         });

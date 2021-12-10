@@ -28,6 +28,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.project.Tasks.NetUtil;
+import com.example.project.Tasks.NotificationTask;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ import java.util.List;
 public class DogsDataActivity extends AppCompatActivity {
 
     public static final int PERMISSION_WRITE = 0;
+
 
     void showNotification(String title, String message) {
         NotificationManager mNotificationManager =
@@ -56,6 +60,7 @@ public class DogsDataActivity extends AppCompatActivity {
         mNotificationManager.notify(0, mBuilder.build());
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,13 +71,15 @@ public class DogsDataActivity extends AppCompatActivity {
         Intent i = this.getIntent();
         String dogType = i.getStringExtra(MainActivity.PARAMETER_DOG_TYPE);
         String dogImageUrl = i.getStringExtra(MainActivity.PARAMETER_DOG_IMAGE_URL);
+        String dogIndex = i.getStringExtra(MainActivity.PARAMETER_DOG_INDEX);
 
         showNotification("Congratulations!", "Do You like " + dogType + " dogs?");
+        //NoficationTask.showNofication("Congratulations!", "Do You like " + dogType + " dogs?", this);
 
         //setImage
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        String picPath = this.getFilesDir() + "/dogDataImage.png";
+        String picPath = this.getFilesDir() + "/dog" + dogIndex + ".png";
         Bitmap bmpDog = BitmapFactory.decodeFile(picPath, options);
         ImageView dogImage = findViewById(R.id.img_dog);
         dogImage.setImageBitmap(bmpDog);

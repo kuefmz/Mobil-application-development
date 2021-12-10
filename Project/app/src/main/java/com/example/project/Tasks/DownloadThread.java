@@ -12,6 +12,12 @@ import com.example.project.model.Dogs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +25,12 @@ import java.util.List;
 public class DownloadThread implements Runnable {
     private Context ctx;
     private URL[] urls;
+    private String path;
 
-    public DownloadThread(Context ctx, URL[] urls) {
+    public DownloadThread(Context ctx, URL[] urls, String path) {
         this.ctx = ctx;
         this.urls = urls;
+        this.path = path;
     }
 
     public static String removeLastChar(String str) {
@@ -31,6 +39,32 @@ public class DownloadThread implements Runnable {
 
     public static String removeLastChars(String str, int chars) {
         return str.substring(0, str.length() - chars);
+    }
+
+    private void saveDogStatsToFile(int index, String type, String url){
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", type);
+            obj.put("url", url);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try (FileWriter file = new FileWriter(path + "/dog" + Integer.toString(index) +".json")) {
+            file.write(obj.toString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void saveBitMapToFile(int index, Bitmap bitmap){
+        try (FileOutputStream out = new FileOutputStream(path + "/dog" + Integer.toString(index) + ".png")) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -54,18 +88,24 @@ public class DownloadThread implements Runnable {
 
         List<Dogs> resultPlanets = Arrays.asList(gson.fromJson(result, Dogs[].class));
 
-        for (Dogs p : resultPlanets) {
+        for (int i = 0; i< resultPlanets.size(); i++) {
+            Dogs p = resultPlanets.get(i);
             Bitmap bmpPlanet = null;
             try {
                 bmpPlanet = NetUtil.readBitmapUrl(new URL(p.getImageUrl()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String imageUrl = p.getImageUrl();
-            String [] type = imageUrl.split("/");
-            p.setType(type[4]);
-            p.setBmpImage(bmpPlanet);
+            if(bmpPlanet != null) {
+                String[] type = p.getImageUrl().split("/");
+                p.setType(type[4]);
+                p.setBmpImage(bmpPlanet);
+                saveDogStatsToFile(i, p.getType(), p.getImageUrl());
+                saveBitMapToFile(i, bmpPlanet);
+            }
         }
+
+
 
         ((MainActivity)ctx).runOnUiThread(new Runnable() {
             @Override
