@@ -91,7 +91,19 @@ public class MainActivity extends AppCompatActivity {
         mNotificationManager.notify(0, mBuilder.build());
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent iNext = new Intent(MainActivity.this, Login.class);
 
+        SharedPreferences sp = getSharedPreferences("Login", 0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("Username", null);
+        editor.commit();
+
+        showNotification("Successful logout from Dog's app", "See You later!");
+        startActivity(iNext);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
