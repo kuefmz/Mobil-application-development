@@ -41,32 +41,6 @@ public class DownloadThread implements Runnable {
         return str.substring(0, str.length() - chars);
     }
 
-    private void saveDogStatsToFile(int index, String type, String url){
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put("type", type);
-            obj.put("url", url);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try (FileWriter file = new FileWriter(path + "/dog" + Integer.toString(index) +".json")) {
-            file.write(obj.toString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void saveBitMapToFile(int index, Bitmap bitmap){
-        try (FileOutputStream out = new FileOutputStream(path + "/dog" + Integer.toString(index) + ".png")) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void run() {
         ((MainActivity)ctx).runOnUiThread(new Runnable() {
@@ -100,12 +74,11 @@ public class DownloadThread implements Runnable {
                 String[] type = p.getImageUrl().split("/");
                 p.setType(type[4]);
                 p.setBmpImage(bmpPlanet);
-                saveDogStatsToFile(i, p.getType(), p.getImageUrl());
-                saveBitMapToFile(i, bmpPlanet);
+                p.setFilename(path + "/dog" + Integer.toString(i) +".png");
+                SaveDogsInfoTask.saveDogStatsToFile(p.getType(), p.getImageUrl(), path + "/dog" + Integer.toString(i) +".json");
+                SaveDogsInfoTask.saveBitMapToFile(bmpPlanet, p.getFilename());
             }
         }
-
-
 
         ((MainActivity)ctx).runOnUiThread(new Runnable() {
             @Override

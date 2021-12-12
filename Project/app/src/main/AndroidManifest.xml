@@ -30,6 +30,8 @@
                 android:value=".MainActivity" />
 
         </activity>
+
+        <!--DogsData activity -->
         <activity
             android:name=".DogsDataActivity"
             android:exported="true" >
@@ -40,6 +42,27 @@
                 <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
+
+        <!--MyPic activity -->
+        <activity
+            android:name=".MyPicActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!--CreatePic activity -->
+        <activity
+            android:name=".CreatePicActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -48,6 +71,10 @@
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera"></uses-feature>
+
 
 
 </manifest>

@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     public final static String PARAMETER_DOG_TYPE="dogType";
     public final static String PARAMETER_DOG_IMAGE_URL="dogImageUrl";
     public final static String PARAMETER_DOG_INDEX="dogIndex";
+    public final static String PARAMETER_FILENAME="dogFilename";
+
     private List<Dogs> dogs;
     private String parameterUsername;
 
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         pb.setVisibility(View.VISIBLE);
         Button btnLoadMore = findViewById(R.id.btn_load_more);
         btnLoadMore.setEnabled(false);
+        Log.d("apple", "MainActivyty startui ");
     }
 
     public void prepareUIFinishDownload(List<Dogs> results){
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnLoadMode = findViewById(R.id.btn_load_more);
         btnLoadMode.setEnabled(true);
         dogs = results;
-
+        Log.d("apple", "MainActivyty " + results.toString());
         DogsListAdapter dogsAdapter = new DogsListAdapter(results, MainActivity.this);
         lv.setAdapter(dogsAdapter);
         ((DogsListAdapter) lv.getAdapter()).addAll(results);
@@ -163,6 +166,16 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
 
                 NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
+                startActivity(iNext);
+            }
+        });
+
+        //Go to My Pic Buttom
+        Button btnMypic = findViewById(R.id.btn_mypic);
+        btnMypic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iNext = new Intent(MainActivity.this, MyPicActivity.class);
                 startActivity(iNext);
             }
         });

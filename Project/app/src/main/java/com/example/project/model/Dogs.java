@@ -23,6 +23,8 @@ public class Dogs {
     private String typeOfDog;
     private Bitmap bmpImage;
 
+    private String filename;
+
     public void setBmpImage(Bitmap bmpImage) {
             this.bmpImage = bmpImage;
     }
@@ -39,6 +41,9 @@ public class Dogs {
 
     public void setType(String type) { this.typeOfDog = type; }
     public String getType() { return this.typeOfDog; }
+
+    public void setFilename(String filename) { this.filename = filename; }
+    public String getFilename() { return this.filename; }
 
 
     public String getStatus() {

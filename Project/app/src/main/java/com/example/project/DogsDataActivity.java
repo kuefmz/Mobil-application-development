@@ -49,15 +49,14 @@ public class DogsDataActivity extends AppCompatActivity {
         String dogType = i.getStringExtra(MainActivity.PARAMETER_DOG_TYPE);
         String dogImageUrl = i.getStringExtra(MainActivity.PARAMETER_DOG_IMAGE_URL);
         String dogIndex = i.getStringExtra(MainActivity.PARAMETER_DOG_INDEX);
+        String filename = i.getStringExtra(MainActivity.PARAMETER_FILENAME);
 
         NotificationTask.showNotification("Congratulations!", "Do You like " + dogType + " dogs?", DogsDataActivity.this);
-        //NoficationTask.showNofication("Congratulations!", "Do You like " + dogType + " dogs?", this);
 
         //setImage
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        String picPath = this.getFilesDir() + "/dog" + dogIndex + ".png";
-        Bitmap bmpDog = BitmapFactory.decodeFile(picPath, options);
+        Bitmap bmpDog = BitmapFactory.decodeFile(filename, options);
         ImageView dogImage = findViewById(R.id.img_dog);
         dogImage.setImageBitmap(bmpDog);
 

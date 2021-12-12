@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.project.MainActivity;
+import com.example.project.MyPicActivity;
 import com.example.project.Tasks.NetUtil;
 import com.example.project.model.Dogs;
 import com.google.gson.Gson;
@@ -24,59 +25,59 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
-public class LoadLocalThread implements Runnable {
+public class LoadMyPicsThread implements Runnable {
     private Context ctx;
-    private String path;
 
-    public LoadLocalThread(Context ctx, String path) {
+    public LoadMyPicsThread(Context ctx) {
         this.ctx = ctx;
-        this.path = path;
     }
 
     @Override
     public void run() {
-        ((MainActivity)ctx).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ((MainActivity)ctx).prepareUIStartDownload();
-            }
-        });
 
         ArrayList<Dogs> resultPlanets = new ArrayList<Dogs>();
 
-        for(int i = 0; i < 10; i++){
-            File file = new File(path, "dog" + Integer.toString(i) + ".json");
-            String fileContent =GetStringFromFileTask.getStringFromFile(file);
-            JSONObject stats = null;
+        File file = new File(ctx.getFilesDir().toString(), "mydogs.json");
+        String fileContent = GetStringFromFileTask.getStringFromFile(file);
+        JSONObject stats = null;
+        try {
+            stats = new JSONObject(fileContent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        for (Iterator<String> it = stats.keys(); it.hasNext(); ) {
+            String key = it.next();
+            String filename = null;
+            String type = null;
             try {
-                stats = new JSONObject(fileContent);
+                String val = stats.getString(key);
+                String[] vals = val.split(";");
+                type = vals[0];
+                filename = vals[1];
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            String picPath = path + "/dog" + Integer.toString(i) + ".png";
-            Bitmap bmpDog = BitmapFactory.decodeFile(picPath, options);
+            Bitmap bmpDog = BitmapFactory.decodeFile(filename, options);
 
             Dogs p = new Dogs();
-            try {
-                p.setType(stats.getString("type"));
-                p.setImageUrl(stats.getString("url"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            p.setType(type);
+            p.setImageUrl(filename);
             p.setBmpImage(bmpDog);
+            p.setFilename(filename);
             resultPlanets.add(p);
         }
 
-        ((MainActivity)ctx).runOnUiThread(new Runnable() {
+        ((MyPicActivity)ctx).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((MainActivity)ctx).prepareUIFinishDownload(resultPlanets);
+                ((MyPicActivity)ctx).prepareUIFinishDownload(resultPlanets);
             }
         });
-
     }
 }

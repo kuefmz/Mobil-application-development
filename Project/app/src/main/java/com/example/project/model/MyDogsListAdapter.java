@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.example.project.DogsDataActivity;
 import com.example.project.MainActivity;
+import com.example.project.MyPicActivity;
 import com.example.project.R;
 
 import org.json.JSONArray;
@@ -32,13 +33,13 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DogsListAdapter extends BaseAdapter {
+public class MyDogsListAdapter extends BaseAdapter {
     private List<Dogs> data = new ArrayList<>();
-    private Context main_ctx;
+    private Context mypics_ctx;
 
-    public DogsListAdapter(List<Dogs> dogs, Context ctx) {
+    public MyDogsListAdapter(List<Dogs> dogs, Context ctx) {
         data.addAll(dogs);
-        main_ctx = (MainActivity)ctx;
+        mypics_ctx = (MyPicActivity)ctx;
     }
     public void addAll(List<Dogs> dogs) {
         data.clear();
@@ -64,35 +65,30 @@ public class DogsListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         LayoutInflater inflater;
-        inflater = (LayoutInflater) main_ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mypics_ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (view == null) {
             view = inflater.inflate(R.layout.dogs_row_layout , viewGroup,false );
         }
 
         ImageView imageView = view.findViewById(R.id.image_dog);
-        //imageView.getLayoutParams().width = 100;
-        //imageView.setScaleType();
         int newWidth = 350;
         int newHeight = 315;
 
-        //Log.d("apple", Integer.toString(newWidth) + ", " + Integer.toString(newHeight));
-
         Bitmap newbitMap = Bitmap.createScaledBitmap(data.get(i).getBmpImage(), newWidth, newHeight, true);
-
-        //imageView.setImageBitmap(data.get(i).getBmpImage());
         imageView.setImageBitmap(newbitMap);
-        imageView.setClickable(true);
+
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent iNext = new Intent(main_ctx, DogsDataActivity.class);
+                Intent iNext = new Intent(mypics_ctx, DogsDataActivity.class);
                 iNext.putExtra(MainActivity.PARAMETER_DOG_TYPE, data.get(i).getType());
                 iNext.putExtra(MainActivity.PARAMETER_DOG_IMAGE_URL, data.get(i).getImageUrl());
                 iNext.putExtra(MainActivity.PARAMETER_DOG_INDEX, Integer.toString(i));
+                iNext.putExtra(MainActivity.PARAMETER_FILENAME, data.get(i).getFilename());
 
-                main_ctx.startActivity(iNext);
+                mypics_ctx.startActivity(iNext);
             }
         });
 
