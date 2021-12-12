@@ -1,13 +1,7 @@
 package com.example.project;
 
-import static android.app.NotificationManager.*;
-
 import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -23,16 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
-import com.example.project.Tasks.NetUtil;
 import com.example.project.Tasks.NotificationTask;
 
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,22 +102,12 @@ public class DogsDataActivity extends AppCompatActivity {
                 }
 
                 ContentResolver cr = getContentResolver();
-                //Uri uri = Uri.parse("content://media/external/images/media");
-                //String provider = "com.android.providers.media.MediaProvider";
-
-                //grantUriPermission(provider, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                //grantUriPermission(provider, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                //grantUriPermission(provider, uri, Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 String path = MediaStore.Images.Media.insertImage(cr, bmpDog,"title", "description");
                 Uri imageUri = Uri.parse(path);
 
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                //shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                //shareIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                //shareIntent.setFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 shareIntent.setType("image/jpeg");
                 startActivity(Intent.createChooser(shareIntent,"Dog image"));
 

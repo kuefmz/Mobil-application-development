@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 
 import com.example.project.Tasks.GetStringFromFileTask;
 import com.example.project.Tasks.SaveDogsInfoTask;
-import com.example.project.model.Dogs;
 
 import org.json.JSONException;
 import org.json.JSONObject;

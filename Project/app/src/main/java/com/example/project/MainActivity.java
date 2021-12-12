@@ -1,9 +1,5 @@
 package com.example.project;
 
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
 import com.example.project.Tasks.DownloadThread;
 import com.example.project.Tasks.LoadLocalThread;
@@ -58,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         pb.setVisibility(View.VISIBLE);
         Button btnLoadMore = findViewById(R.id.btn_load_more);
         btnLoadMore.setEnabled(false);
-        Log.d("apple", "MainActivyty startui ");
     }
 
     public void prepareUIFinishDownload(List<Dogs> results){
@@ -69,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnLoadMode = findViewById(R.id.btn_load_more);
         btnLoadMode.setEnabled(true);
         dogs = results;
-        Log.d("apple", "MainActivyty " + results.toString());
         DogsListAdapter dogsAdapter = new DogsListAdapter(results, MainActivity.this);
         lv.setAdapter(dogsAdapter);
         ((DogsListAdapter) lv.getAdapter()).addAll(results);
@@ -78,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed()
-    {        NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
+    {
+        NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
 
         Intent iNext = new Intent(MainActivity.this, Login.class);
 
@@ -86,9 +80,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("Username", null);
         editor.commit();
-
-
-//        NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
         startActivity(iNext);
     }
 

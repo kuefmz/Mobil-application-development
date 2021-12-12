@@ -25,7 +25,6 @@ public class NetUtil {
             while ((inputLine = in.readLine()) != null)
                 response.append(inputLine);
 
-            Log.i("MainActivity", response.toString());
             in.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -8,13 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
-import com.example.project.Tasks.LoadLocalThread;
 import com.example.project.Tasks.LoadMyPicsThread;
 import com.example.project.model.Dogs;
 import com.example.project.model.DogsListAdapter;
-import com.example.project.model.MyDogsListAdapter;
 
 import java.util.List;
 
@@ -27,19 +24,15 @@ public class MyPicActivity extends Activity {
     public void prepareUIFinishDownload(List<Dogs> results){
         ListView lv = findViewById(R.id.lst_mydogs);
         lv.setVisibility(View.VISIBLE);
-        Log.d("apple", "MyPicActivity prepareUI");
-        Log.d("apple", "MyPicActivity " + results.toString());
-        MyDogsListAdapter dogsAdapter = new MyDogsListAdapter(results, MyPicActivity.this);
+        DogsListAdapter dogsAdapter = new DogsListAdapter(results, MyPicActivity.this);
         lv.setAdapter(dogsAdapter);
-        ((MyDogsListAdapter) lv.getAdapter()).addAll(results);
+        ((DogsListAdapter) lv.getAdapter()).addAll(results);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mypic_page);
-
-        Log.d("apple", "MyPicActivity oncreate");
 
         Intent i = this.getIntent();
 
