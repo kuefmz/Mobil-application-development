@@ -100,57 +100,56 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.main_page);
 
         Intent i = this.getIntent();
         URL[] randomDogs = new URL[10];
+        try {
+            randomDogs[0] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[1] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[2] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[3] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[4] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[5] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[6] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[7] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[8] = (new URL("https://dog.ceo/api/breeds/image/random"));
+            randomDogs[9] = (new URL("https://dog.ceo/api/breeds/image/random"));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
-        parameterUsername = i.getStringExtra(Login.PARAMETER_USERNAME);
-        ((TextView) findViewById(R.id.txt_username)).setText("Welcome " + parameterUsername + "!");
-        if(checkIfNetworkAccess()) {
-            try {
-                randomDogs[0] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[1] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[2] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[3] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[4] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[5] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[6] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[7] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[8] = (new URL("https://dog.ceo/api/breeds/image/random"));
-                randomDogs[9] = (new URL("https://dog.ceo/api/breeds/image/random"));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            String filesDir = this.getFilesDir().toString();
-            DownloadThread dTask = new DownloadThread(MainActivity.this,
-                    randomDogs, filesDir);
-            Thread th = new Thread(dTask);
-            th.start();
-
-            //Load more images button
-            Button btnLoadMore = findViewById(R.id.btn_load_more);
-            btnLoadMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        //Load more images button
+        Button btnLoadMore = findViewById(R.id.btn_load_more);
+        btnLoadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkIfNetworkAccess()) {
                     ListView lv = findViewById(R.id.lst_planets);
+                    btnLoadMore.setText("Load more images");
                     lv.setVisibility(View.INVISIBLE);
                     ProgressBar pb = findViewById(R.id.loading_images);
                     pb.setVisibility(View.VISIBLE);
 
                     DownloadThread dTask = new DownloadThread(MainActivity.this,
-                            randomDogs, filesDir);
+                            randomDogs, MainActivity.this.getFilesDir().toString());
                     Thread th = new Thread(dTask);
                     th.start();
+                } else {
+                    btnLoadMore.setText("Offline");
                 }
-            });
+            }
+        });
 
+        parameterUsername = i.getStringExtra(Login.PARAMETER_USERNAME);
+        ((TextView) findViewById(R.id.txt_username)).setText("Welcome " + parameterUsername + "!");
+        if(checkIfNetworkAccess()) {
+            DownloadThread dTask = new DownloadThread(MainActivity.this,
+                    randomDogs, this.getFilesDir().toString());
+            Thread th = new Thread(dTask);
+            th.start();
         }else{
-            //Load more images button
-            Button btnLoadMore = findViewById(R.id.btn_load_more);
             btnLoadMore.setText("Offline");
             LoadLocalThread dTask = new LoadLocalThread(MainActivity.this, this.getFilesDir().toString());
             Thread th = new Thread(dTask);
