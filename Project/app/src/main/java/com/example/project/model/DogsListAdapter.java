@@ -19,10 +19,12 @@ import java.util.List;
 public class DogsListAdapter extends BaseAdapter {
     private List<Dogs> data = new ArrayList<>();
     private Context ctx;
+    private Boolean removable = false;
 
-    public DogsListAdapter(List<Dogs> dogs, Context ctx) {
+    public DogsListAdapter(List<Dogs> dogs, Context ctx, Boolean removable) {
         data.addAll(dogs);
         this.ctx = ctx;
+        this.removable = removable;
     }
     public void addAll(List<Dogs> dogs) {
         data.clear();
@@ -69,7 +71,7 @@ public class DogsListAdapter extends BaseAdapter {
                 iNext.putExtra(MainActivity.PARAMETER_DOG_IMAGE_URL, data.get(i).getImageUrl());
                 iNext.putExtra(MainActivity.PARAMETER_DOG_INDEX, Integer.toString(i));
                 iNext.putExtra(MainActivity.PARAMETER_FILENAME, data.get(i).getFilename());
-
+                iNext.putExtra(MainActivity.PARAMETER_REMOVABLE, removable.toString());
                 ctx.startActivity(iNext);
             }
         });

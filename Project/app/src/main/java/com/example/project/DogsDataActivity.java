@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,10 +18,19 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.project.Tasks.GetStringFromFileTask;
 import com.example.project.Tasks.NotificationTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DogsDataActivity extends AppCompatActivity {
 
@@ -36,6 +46,7 @@ public class DogsDataActivity extends AppCompatActivity {
         String dogImageUrl = i.getStringExtra(MainActivity.PARAMETER_DOG_IMAGE_URL);
         String dogIndex = i.getStringExtra(MainActivity.PARAMETER_DOG_INDEX);
         String filename = i.getStringExtra(MainActivity.PARAMETER_FILENAME);
+        String removable = i.getStringExtra(MainActivity.PARAMETER_REMOVABLE);
 
         NotificationTask.showNotification("Congratulations!", "Do You like " + dogType + " dogs?", DogsDataActivity.this);
 
@@ -57,8 +68,8 @@ public class DogsDataActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent iNext = new Intent(DogsDataActivity.this, MainActivity.class);
-                iNext.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //Intent iNext = new Intent(DogsDataActivity.this, MainActivity.class);
+                //iNext.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 finish();
             }
         });
@@ -114,6 +125,43 @@ public class DogsDataActivity extends AppCompatActivity {
 
             }
         });
+
+        Button btnRemove = findViewById(R.id.btn_remove_mypic);
+        if (removable.equals("true")) {
+            Log.d("apple", removable);
+            btnRemove.setVisibility(View.VISIBLE);
+            btnRemove.setEnabled(true);
+            btnRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    File file = new File(DogsDataActivity.this.getFilesDir(), "mydogs.json");
+                    String content = GetStringFromFileTask.getStringFromFile(file);
+
+                    JSONObject stats = null;
+                    try {
+                        stats = new JSONObject(content);
+                        Pattern p = Pattern.compile("\\d+");
+                        String[] s = filename.split("/");
+                        Matcher m = p.matcher(s[s.length-1]);
+                        String index = null;
+                        if (m.find()) {
+                            index = m.group();
+                        }
+                        stats.remove(index);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try (FileWriter myfile = new FileWriter( DogsDataActivity.this.getFilesDir() + "/mydogs.json")) {
+                        myfile.write(stats.toString());
+                        myfile.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    finish();
+                }
+            });
+        }
 
     }
 }

@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String PARAMETER_DOG_IMAGE_URL="dogImageUrl";
     public final static String PARAMETER_DOG_INDEX="dogIndex";
     public final static String PARAMETER_FILENAME="dogFilename";
+    public final static String PARAMETER_REMOVABLE="removable";
 
     private List<Dogs> dogs;
     private String parameterUsername;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnLoadMode = findViewById(R.id.btn_load_more);
         btnLoadMode.setEnabled(true);
         dogs = results;
-        DogsListAdapter dogsAdapter = new DogsListAdapter(results, MainActivity.this);
+        DogsListAdapter dogsAdapter = new DogsListAdapter(results, MainActivity.this, false);
         lv.setAdapter(dogsAdapter);
         ((DogsListAdapter) lv.getAdapter()).addAll(results);
 

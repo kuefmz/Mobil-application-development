@@ -24,7 +24,7 @@ public class MyPicActivity extends Activity {
     public void prepareUIFinishDownload(List<Dogs> results){
         ListView lv = findViewById(R.id.lst_mydogs);
         lv.setVisibility(View.VISIBLE);
-        DogsListAdapter dogsAdapter = new DogsListAdapter(results, MyPicActivity.this);
+        DogsListAdapter dogsAdapter = new DogsListAdapter(results, MyPicActivity.this, true);
         lv.setAdapter(dogsAdapter);
         ((DogsListAdapter) lv.getAdapter()).addAll(results);
     }
@@ -36,6 +36,7 @@ public class MyPicActivity extends Activity {
 
         Intent i = this.getIntent();
 
+        //Add new pic button
         Button btnCreate = findViewById(R.id.btn_addpic);
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,5 +64,40 @@ public class MyPicActivity extends Activity {
 
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setContentView(R.layout.mypic_page);
+
+        Intent i = this.getIntent();
+
+        //Add new pic button
+        Button btnCreate = findViewById(R.id.btn_addpic);
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iNext = new Intent(MyPicActivity.this, CreatePicActivity.class);
+                iNext.putExtra("path", MyPicActivity.this.getFilesDir().toString());
+                startActivity(iNext);
+            }
+        });
+
+        //Back to main
+        Button btnBackToMain = findViewById(R.id.btn_back_to_main);
+        btnBackToMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iNext = new Intent(MyPicActivity.this, MainActivity.class);
+                iNext.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
+            }
+        });
+
+        LoadMyPicsThread dTask = new LoadMyPicsThread(MyPicActivity.this);
+        Thread th = new Thread(dTask);
+        th.start();
+    }
+
 }
 

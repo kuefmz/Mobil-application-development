@@ -24,6 +24,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class CreatePicActivity extends Activity {
 
@@ -73,7 +76,13 @@ public class CreatePicActivity extends Activity {
                 }
 
                 Log.d("apple", stats.toString());
-                int index = stats.length();
+                //int index = stats.length();
+                ArrayList<Integer> keys = new ArrayList<>();
+                for (Iterator<String> it = stats.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    keys.add(Integer.parseInt(key));
+                }
+                int index = keys.size() == 0? 1 : Collections.max(keys) + 1;
                 String filename = path + "/mydog" + Integer.toString(index) + ".png";
 
                 try {
