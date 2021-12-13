@@ -9,13 +9,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.project.Tasks.LoadMyPicsThread;
 import com.example.project.model.Dogs;
 import com.example.project.model.DogsListAdapter;
 
 import java.util.List;
 
-public class MyPicActivity extends Activity {
+public class MyPicActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 1888;
     private ImageView imageView;
@@ -90,6 +92,7 @@ public class MyPicActivity extends Activity {
             public void onClick(View v) {
                 Intent iNext = new Intent(MyPicActivity.this, MainActivity.class);
                 iNext.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //startActivity(iNext);
                 finish();
             }
         });

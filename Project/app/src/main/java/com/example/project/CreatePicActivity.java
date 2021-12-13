@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.project.Tasks.GetStringFromFileTask;
 import com.example.project.Tasks.SaveDogsInfoTask;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class CreatePicActivity extends Activity {
+public class CreatePicActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 1888;
     private ImageView imageView;
@@ -58,6 +59,7 @@ public class CreatePicActivity extends Activity {
             }
         });
 
+        //Button save pic
         Button btnSave = findViewById(R.id.btn_save_mypic);
         btnSave.setEnabled(false);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +107,9 @@ public class CreatePicActivity extends Activity {
                 imageView = null;
 
                 Intent iNext = new Intent(CreatePicActivity.this, MyPicActivity.class);
+                iNext.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(iNext);
+                finish();
             }
         });
 
@@ -116,6 +120,7 @@ public class CreatePicActivity extends Activity {
             public void onClick(View v) {
                 Intent iNext = new Intent(CreatePicActivity.this, MyPicActivity.class);
                 iNext.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(iNext);
                 finish();
             }
         });
@@ -128,22 +133,21 @@ public class CreatePicActivity extends Activity {
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
             else
             {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             myDogBm = (Bitmap) data.getExtras().get("data");
             Button btnSave = findViewById(R.id.btn_save_mypic);
             btnSave.setEnabled(true);

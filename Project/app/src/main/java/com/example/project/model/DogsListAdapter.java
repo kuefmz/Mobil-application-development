@@ -56,7 +56,7 @@ public class DogsListAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.dogs_row_layout , viewGroup,false );
         }
 
-        final int newWidth = 350;
+        final int newWidth = 400;
         final int newHeight = 315;
 
         Bitmap newbitMap = Bitmap.createScaledBitmap(data.get(i).getBmpImage(), newWidth, newHeight, true);

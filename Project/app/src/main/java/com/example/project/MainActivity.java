@@ -21,6 +21,8 @@ import com.example.project.Tasks.NotificationTask;
 import com.example.project.model.Dogs;
 import com.example.project.model.DogsListAdapter;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void prepareUIStartDownload(){
         ProgressBar pb = findViewById(R.id.loading_images);
+        ListView lv = findViewById(R.id.lst_planets);
+        lv.setVisibility(View.INVISIBLE);
         pb.setVisibility(View.VISIBLE);
         Button btnLoadMore = findViewById(R.id.btn_load_more);
         btnLoadMore.setEnabled(false);
@@ -70,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void logoutUser() {
+        try (FileWriter file = new FileWriter(MainActivity.this.getFilesDir().toString() + "/mydogs.json")) {
+            file.write("{}");
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onBackPressed()
     {
@@ -77,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent iNext = new Intent(MainActivity.this, Login.class);
 
+        logoutUser();
         SharedPreferences sp = getSharedPreferences("Login", 0);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("Username", null);
@@ -156,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("Username", null);
                 editor.commit();
+
+                logoutUser();
 
                 NotificationTask.showNotification("Successful logout from Dog's app", "See You later!", MainActivity.this);
                 startActivity(iNext);
